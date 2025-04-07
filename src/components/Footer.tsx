@@ -1,4 +1,3 @@
-
 import { Instagram, Facebook, Mail, Phone } from "lucide-react";
 
 const Footer = () => {
@@ -7,7 +6,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start">
           <div className="mb-8 md:mb-0 text-center md:text-left">
-            <h3 className="text-xl font-serif mb-4">Studio Klippglädje</h3>
+            <h3 className="text-xl font-serif mb-4">Hallunda Hårstudio</h3>
             <p className="text-salon-300 max-w-xs mx-auto md:mx-0">
               En modern salong där varje kund får en personlig och professionell upplevelse.
             </p>
@@ -50,7 +49,7 @@ const Footer = () => {
         
         <div className="border-t border-salon-700 mt-8 pt-8 text-center">
           <p className="text-salon-400 text-sm">
-            &copy; {new Date().getFullYear()} Studio Klippglädje. Alla rättigheter förbehållna.
+            &copy; {new Date().getFullYear()} Hallunda Hårstudio. Alla rättigheter förbehållna.
           </p>
         </div>
       </div>

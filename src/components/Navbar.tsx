@@ -17,7 +17,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <a href="#hero" className="flex-shrink-0 flex items-center">
               <h1 className="text-xl font-serif font-semibold text-salon-800">
-                Studio Klippglädje
+                Hallunda Hårstudio
               </h1>
             </a>
           </div>

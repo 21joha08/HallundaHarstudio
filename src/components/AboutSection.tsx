@@ -31,12 +31,12 @@ const AboutSection = () => {
           </div>
           
           <div className="lg:w-1/2">
-            <h3 className="text-2xl font-serif mb-6">Vi är Studio Klippglädje</h3>
+            <h3 className="text-2xl font-serif mb-6">Vi är Hallunda Hårstudio</h3>
             <p className="text-salon-700 mb-4">
               Jag heter [Ditt Namn] och har över 10 års erfarenhet som frisör. Mitt mål är att varje kund ska lämna salongen med ett leende på läpparna och ett hår som speglar deras stil.
             </p>
             <p className="text-salon-700 mb-6">
-              På Studio Klippglädje prioriterar vi kvalitet, personlig service och en avslappnad atmosfär. Vi lyssnar på dina önskemål och ger professionella råd för att hitta den perfekta stilen för dig.
+              På Hallunda Hårstudio prioriterar vi kvalitet, personlig service och en avslappnad atmosfär. Vi lyssnar på dina önskemål och ger professionella råd för att hitta den perfekta stilen för dig.
             </p>
             
             <Card className="border border-salon-200 bg-secondary shadow-sm">
