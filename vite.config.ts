@@ -16,6 +16,12 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
+  define: {
+    // Fix for __WS_TOKEN__ not defined error in production
+    ...(mode === 'production' && {
+      __WS_TOKEN__: JSON.stringify("")
+    })
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
