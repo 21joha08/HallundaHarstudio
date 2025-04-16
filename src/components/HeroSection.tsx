@@ -2,6 +2,8 @@
 import { Button } from "@/components/ui/button";
 
 const HeroSection = () => {
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
   return (
     <section id="hero" className="hero-section min-h-screen flex items-center justify-center pt-20">
       <div className="container mx-auto px-4 py-24 text-center">
@@ -19,6 +21,14 @@ const HeroSection = () => {
             <a href="#services">Våra tjänster</a>
           </Button>
         </div>
+        
+        {isDevelopment && (
+          <div className="mt-8 opacity-60 hover:opacity-100 transition-opacity">
+            <Button asChild size="sm" variant="outline">
+              <a href="#email-setup">Konfigurera E-post</a>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

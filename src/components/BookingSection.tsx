@@ -31,6 +31,10 @@ const timeSlots = [
   "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
 ];
 
+const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID"; // Replace with your EmailJS service ID
+const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID"; // Replace with your EmailJS template ID
+const EMAILJS_USER_ID = "YOUR_USER_ID"; // Replace with your EmailJS user ID
+
 const BookingSection = () => {
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState<string>();
@@ -42,9 +46,10 @@ const BookingSection = () => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Simple validation
@@ -56,12 +61,42 @@ const BookingSection = () => {
       });
       return;
     }
-
     // Here you would normally send the booking data to your backend
     console.log("Booking data:", { date, time, name, phone, email, service, message });
 
     // Show confirmation dialog
     setConfirmationOpen(true);
+    setIsSubmitting(true);
+
+    try {
+      // Format date for email
+      const formattedDate = date ? format(date, "PPP", { locale: sv }) : "";
+
+      // Prepare template parameters for EmailJS
+      const templateParams = {
+        name,
+        email,
+        phone,
+        service,
+        date: formattedDate,
+        time,
+        message,
+      };
+
+
+
+      // Show confirmation dialog
+      setConfirmationOpen(true);
+    } catch (error) {
+      console.error("Error sending email:", error);
+      toast({
+        title: "Ett fel uppstod",
+        description: "Vi kunde inte skicka din bokning. Vänligen försök igen senare eller kontakta oss direkt per telefon.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -273,15 +308,30 @@ const BookingSection = () => {
                 <Button
                   type="submit"
                   size="lg"
+                  disabled={isSubmitting}
                   className="w-full bg-accent hover:bg-accent/90 text-primary transition-colors"
                 >
-                  <CalendarCheck className="mr-2 h-5 w-5" />
-                  Boka tid nu
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Skickar...
+                    </>
+                  ) : (
+                    <>
+                      <CalendarCheck className="mr-2 h-5 w-5" />
+                      Boka tid nu
+                    </>
+                  )}
                 </Button>
 
-                <p className="text-sm text-salon-500 mt-4">
-                  * Obligatoriska fält. Om du behöver avboka eller ändra din tid, vänligen kontakta oss senast 24 timmar innan din bokade tid.
-                </p>
+                <div className="text-center mt-4">
+                  <p className="text-sm text-salon-600 mb-2">
+                    När du bokar tid skickas dina uppgifter via email till salongen.
+                  </p>
+                  <p className="text-sm text-salon-500">
+                    * Obligatoriska fält. Om du behöver avboka eller ändra din tid, vänligen kontakta oss senast 24 timmar innan din bokade tid.
+                  </p>
+                </div>
               </form>
             </CardContent>
           </Card>
