@@ -46,7 +46,7 @@ const BookingSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Simple validation
     if (!date || !time || !name || !phone || !email || !service) {
       toast({
@@ -59,7 +59,7 @@ const BookingSection = () => {
 
     // Here you would normally send the booking data to your backend
     console.log("Booking data:", { date, time, name, phone, email, service, message });
-    
+
     // Show confirmation dialog
     setConfirmationOpen(true);
   };
@@ -84,7 +84,7 @@ const BookingSection = () => {
         <p className="section-heading text-center text-salon-600 mb-8">
           Enkelt och smidigt online
         </p>
-        
+
         <div className="max-w-2xl mx-auto">
           <Card className="border border-salon-200 shadow-lg overflow-hidden">
             <div className="p-1 bg-accent/20"></div>
@@ -310,8 +310,8 @@ const BookingSection = () => {
                 <p><span className="font-medium">Namn:</span> {name}</p>
               </div>
             )}
-            <Button 
-              onClick={resetForm} 
+            <Button
+              onClick={resetForm}
               className="w-full bg-accent hover:bg-accent/90 text-primary transition-colors"
             >
               Stäng
