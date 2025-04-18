@@ -62,6 +62,7 @@ const Admin = () => {
     return bookingDate < today;
   }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+  // Function to format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, "PPP", { locale: sv });
@@ -93,6 +94,7 @@ const Admin = () => {
                     key={booking.id} 
                     booking={booking} 
                     onDelete={handleDeleteBooking} 
+                    formatDate={formatDate}
                   />
                 ))}
               </div>
@@ -114,6 +116,7 @@ const Admin = () => {
                     key={booking.id} 
                     booking={booking} 
                     onDelete={handleDeleteBooking}
+                    formatDate={formatDate}
                     isPast 
                   />
                 ))}
@@ -129,10 +132,11 @@ const Admin = () => {
 interface BookingCardProps {
   booking: BookingData;
   onDelete: (id: string) => void;
+  formatDate: (dateString: string) => string;
   isPast?: boolean;
 }
 
-const BookingCard = ({ booking, onDelete, isPast = false }: BookingCardProps) => {
+const BookingCard = ({ booking, onDelete, formatDate, isPast = false }: BookingCardProps) => {
   return (
     <Card className={isPast ? "opacity-70" : ""}>
       <CardHeader className="pb-2">
