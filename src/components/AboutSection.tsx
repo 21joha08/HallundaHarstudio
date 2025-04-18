@@ -11,14 +11,14 @@ const AboutSection = () => {
         <p className="section-heading text-center text-salon-600 mb-8">
           Lär känna oss och vår historia
         </p>
-        
+
         <div className="flex flex-col lg:flex-row gap-12 items-center">
           <div className="lg:w-1/2">
             <div className="relative">
               <div className="aspect-[4/5] bg-salon-200 rounded-lg overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&q=80" 
-                  alt="Frisör" 
+                <img
+                  src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&q=80"
+                  alt="Frisör"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -29,16 +29,13 @@ const AboutSection = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="lg:w-1/2">
             <h3 className="text-2xl font-serif mb-6">Vi är Hallunda Hårstudio</h3>
-            <p className="text-salon-700 mb-4">
-              Jag heter [Ditt Namn] och har över 10 års erfarenhet som frisör. Mitt mål är att varje kund ska lämna salongen med ett leende på läpparna och ett hår som speglar deras stil.
-            </p>
             <p className="text-salon-700 mb-6">
-              På Hallunda Hårstudio prioriterar vi kvalitet, personlig service och en avslappnad atmosfär. Vi lyssnar på dina önskemål och ger professionella råd för att hitta den perfekta stilen för dig.
+              På Hallunda Hårstudio prioriterar vi kvalitet, personlig service och en avslappnad atmosfär. Vi lyssnar på dina önskemål och ger råd för att hitta den perfekta stilen för dig.
             </p>
-            
+
             <Card className="border border-salon-200 bg-secondary shadow-sm">
               <CardContent className="p-6">
                 <h4 className="text-xl font-serif mb-4">Vår målgrupp</h4>
@@ -50,14 +47,6 @@ const AboutSection = () => {
                   <li className="flex items-start">
                     <span className="text-accent mr-2">•</span>
                     <span>Familjer</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-accent mr-2">•</span>
-                    <span>Personer som söker en professionell och trygg salong med ett personligt bemötande</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-accent mr-2">•</span>
-                    <span>Kunder i [stad/område], med fokus på kvalitet före kvantitet</span>
                   </li>
                 </ul>
               </CardContent>

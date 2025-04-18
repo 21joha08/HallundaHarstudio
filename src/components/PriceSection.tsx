@@ -4,22 +4,22 @@ import { Card, CardContent } from "@/components/ui/card";
 const prices = [
   {
     service: "Damklippning",
-    price: "550 kr",
-    description: "Konsultation, tvätt, klippning och styling"
-  },
-  {
-    service: "Herrklippning",
     price: "450 kr",
     description: "Konsultation, tvätt, klippning och styling"
   },
   {
+    service: "Herrklippning",
+    price: "330 kr",
+    description: "Tvätt, klippning hår och skägg, endast hårklippning 180 kr"
+  },
+  {
     service: "Barnklippning (0–12 år)",
-    price: "300 kr",
+    price: "150 kr",
     description: "Anpassad klippning för barn"
   },
   {
     service: "Färgning",
-    price: "från 1200 kr",
+    price: "från 599 kr",
     description: "Inklusive tvätt och färgbehandling"
   },
   {
@@ -39,7 +39,7 @@ const PriceSection = () => {
         <p className="section-heading text-center text-salon-600 mb-12">
           Våra tjänster och aktuella priser
         </p>
-        
+
         <div className="max-w-3xl mx-auto">
           {prices.map((item, index) => (
             <Card key={index} className="mb-4 border border-salon-200 overflow-hidden">
@@ -59,7 +59,7 @@ const PriceSection = () => {
             </Card>
           ))}
         </div>
-        
+
         <div className="mt-12 text-center">
           <p className="text-salon-600 italic">
             * Priserna kan variera beroende på hårets längd och tjocklek. Kontakta oss för en personlig prisuppgift.

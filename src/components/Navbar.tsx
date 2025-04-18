@@ -22,7 +22,7 @@ const Navbar = () => {
               </h1>
             </Link>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/#services" className="text-salon-600 hover:text-salon-800 px-3 py-2 text-sm font-medium transition-colors">
               Tjänster
@@ -43,7 +43,7 @@ const Navbar = () => {
               <Link to="/#booking">Boka tid</Link>
             </Button>
           </div>
-          
+
           <div className="md:hidden flex items-center">
             <button
               type="button"
@@ -55,7 +55,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      
+
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-salon-100 animate-fade-in">
           <div className="pt-2 pb-4 space-y-1 px-4">
@@ -67,9 +67,6 @@ const Navbar = () => {
             </Link>
             <Link to="/#prices" className="block px-3 py-2 text-salon-600 font-medium hover:text-salon-800 hover:bg-salon-50 rounded" onClick={toggleMobileMenu}>
               Priser
-            </Link>
-            <Link to="/#gallery" className="block px-3 py-2 text-salon-600 font-medium hover:text-salon-800 hover:bg-salon-50 rounded" onClick={toggleMobileMenu}>
-              Galleri
             </Link>
             <Link to="/#contact" className="block px-3 py-2 text-salon-600 font-medium hover:text-salon-800 hover:bg-salon-50 rounded" onClick={toggleMobileMenu}>
               Kontakt
