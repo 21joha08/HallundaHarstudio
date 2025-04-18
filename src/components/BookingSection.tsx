@@ -1,8 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { Calendar, Clock, CalendarCheck, User, Phone, Mail } from "lucide-react";
+import { Calendar, Clock, CalendarCheck, User, Phone, Mail, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar as CalendarUI } from "@/components/ui/calendar";
@@ -22,8 +22,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  getAllBookings, 
+  getAvailableTimeSlots, 
+  addBooking, 
+  isTimeSlotAvailable 
+} from "@/services/bookingService";
 
 const timeSlots = [
   "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -47,7 +54,21 @@ const BookingSection = () => {
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const { toast } = useToast();
+
+  // Update available time slots when date changes
+  useEffect(() => {
+    if (date) {
+      const availableTimes = getAvailableTimeSlots(date, timeSlots);
+      setAvailableTimeSlots(availableTimes);
+      
+      // Clear selected time if it's no longer available
+      if (time && !availableTimes.includes(time)) {
+        setTime(undefined);
+      }
+    }
+  }, [date, time]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,16 +82,39 @@ const BookingSection = () => {
       });
       return;
     }
-    // Here you would normally send the booking data to your backend
-    console.log("Booking data:", { date, time, name, phone, email, service, message });
 
-    // Show confirmation dialog
-    setConfirmationOpen(true);
+    // Double-check availability at submission time
+    if (date && time && !isTimeSlotAvailable(date, time)) {
+      toast({
+        title: "Tiden är inte tillgänglig",
+        description: "Någon har precis bokat denna tid. Vänligen välj en annan tid.",
+        variant: "destructive",
+      });
+      // Refresh available times
+      const availableTimes = getAvailableTimeSlots(date, timeSlots);
+      setAvailableTimeSlots(availableTimes);
+      setTime(undefined);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Format date for email
-      const formattedDate = date ? format(date, "PPP", { locale: sv }) : "";
+      // Format date for storage and display
+      const formattedDate = date ? date.toISOString().split('T')[0] : "";
+
+      // Add the booking to our storage
+      const bookingData = {
+        date: formattedDate,
+        time: time || "",
+        name,
+        phone,
+        email,
+        service,
+        message,
+      };
+
+      addBooking(bookingData);
 
       // Prepare template parameters for EmailJS
       const templateParams = {
@@ -78,17 +122,24 @@ const BookingSection = () => {
         email,
         phone,
         service,
-        date: formattedDate,
+        date: date ? format(date, "PPP", { locale: sv }) : "",
         time,
         message,
       };
 
-
-
+      console.log("Booking data:", bookingData);
+      
       // Show confirmation dialog
       setConfirmationOpen(true);
+      
+      // Update available times
+      if (date) {
+        const updatedAvailableTimes = getAvailableTimeSlots(date, timeSlots);
+        setAvailableTimeSlots(updatedAvailableTimes);
+      }
+
     } catch (error) {
-      console.error("Error sending email:", error);
+      console.error("Error processing booking:", error);
       toast({
         title: "Ett fel uppstod",
         description: "Vi kunde inte skicka din bokning. Vänligen försök igen senare eller kontakta oss direkt per telefon.",
@@ -108,6 +159,14 @@ const BookingSection = () => {
     setService("Damklippning");
     setMessage("");
     setConfirmationOpen(false);
+  };
+
+  // Helper to determine if a date has limited availability
+  const getDayAvailability = (day: Date) => {
+    const availableTimes = getAvailableTimeSlots(day, timeSlots);
+    if (availableTimes.length === 0) return "none";
+    if (availableTimes.length < 5) return "limited";
+    return "available";
   };
 
   return (
@@ -152,14 +211,36 @@ const BookingSection = () => {
                             setDate(newDate);
                             setIsDatePickerOpen(false);
                           }}
-                          disabled={(date) => {
+                          modifiers={{
+                            limited: (day) => getDayAvailability(day) === "limited",
+                            fully_booked: (day) => getDayAvailability(day) === "none"
+                          }}
+                          modifiersClassNames={{
+                            limited: "bg-yellow-100 text-yellow-900",
+                            fully_booked: "bg-red-100 text-red-900"
+                          }}
+                          disabled={(day) => {
                             // Disable past dates and Sundays
-                            const day = date.getDay();
-                            return date < new Date(new Date().setHours(0, 0, 0, 0)) || day === 0;
+                            const dayOfWeek = day.getDay();
+                            return day < new Date(new Date().setHours(0, 0, 0, 0)) || dayOfWeek === 0 || getDayAvailability(day) === "none";
                           }}
                           initialFocus
                           className="p-3 pointer-events-auto"
                         />
+                        <div className="p-3 border-t border-border flex justify-between text-xs">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full bg-primary mr-1"></div>
+                            <span>Tillgänglig</span>
+                          </div>
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full bg-yellow-100 mr-1"></div>
+                            <span>Begränsad</span>
+                          </div>
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full bg-red-100 mr-1"></div>
+                            <span>Fullbokad</span>
+                          </div>
+                        </div>
                       </PopoverContent>
                     </Popover>
                   </div>
@@ -184,25 +265,44 @@ const BookingSection = () => {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-56" align="start">
-                        <div className="grid grid-cols-2 gap-2 p-2">
-                          {timeSlots.map((slot) => (
-                            <Button
-                              key={slot}
-                              variant="outline"
-                              size="sm"
-                              className={cn(
-                                "justify-start font-normal",
-                                time === slot && "bg-accent/20 border-accent"
-                              )}
-                              onClick={() => {
-                                setTime(slot);
-                                setIsTimePickerOpen(false);
-                              }}
-                            >
-                              {slot}
-                            </Button>
-                          ))}
-                        </div>
+                        {availableTimeSlots.length > 0 ? (
+                          <div className="grid grid-cols-2 gap-2 p-2">
+                            {timeSlots.map((slot) => {
+                              const isAvailable = availableTimeSlots.includes(slot);
+                              return (
+                                <Button
+                                  key={slot}
+                                  variant="outline"
+                                  size="sm"
+                                  className={cn(
+                                    "justify-start font-normal",
+                                    time === slot && "bg-accent/20 border-accent",
+                                    !isAvailable && "opacity-50 cursor-not-allowed bg-muted"
+                                  )}
+                                  onClick={() => {
+                                    if (isAvailable) {
+                                      setTime(slot);
+                                      setIsTimePickerOpen(false);
+                                    }
+                                  }}
+                                  disabled={!isAvailable}
+                                >
+                                  {slot}
+                                  {!isAvailable && (
+                                    <Badge variant="outline" className="ml-1 text-xs">
+                                      Bokad
+                                    </Badge>
+                                  )}
+                                </Button>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="p-4 text-center">
+                            <AlertCircle className="h-6 w-6 text-destructive mx-auto mb-2" />
+                            <p className="text-sm">Inga lediga tider för detta datum</p>
+                          </div>
+                        )}
                       </PopoverContent>
                     </Popover>
                   </div>
@@ -308,7 +408,7 @@ const BookingSection = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !date || !time}
                   className="w-full bg-accent hover:bg-accent/90 text-primary transition-colors"
                 >
                   {isSubmitting ? (
